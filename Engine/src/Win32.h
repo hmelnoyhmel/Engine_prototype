@@ -1,8 +1,11 @@
 #pragma once
+#include <memory>
 #include <windows.h>
 #include <string>
+#include <unordered_map>
 
 class UserApp;
+class GameWindow;
 
 class Win32
 {
@@ -12,6 +15,7 @@ public:
 
 private:
     static inline HWND m_hwnd;
+    static inline std::unordered_map<HWND, std::shared_ptr<GameWindow>> windowsMap;
 
     static void CalculateFrameStats(UserApp* pApp);
     static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

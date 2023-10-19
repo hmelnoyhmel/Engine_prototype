@@ -1,44 +1,16 @@
 #include "Win32.h"
 #include "Event.h"
+#include "GameWindow.h"
 #include "UserApp.h"
 
 LRESULT CALLBACK Win32::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	UserApp* pApp = reinterpret_cast<UserApp*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
-	switch (msg)
+	//std::shared_ptr<GameWindow> pWindow;
+	auto const iteratorWindow = windowsMap.find(hWnd);
+	if (iteratorWindow != windowsMap.end())
 	{
-	case WM_CREATE:
-		{
-			LPCREATESTRUCT const pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-			SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pCreateStruct->lpCreateParams));
-			return 0;
-		}
-	case WM_LBUTTONDOWN:
-		{
-			MessageBox(nullptr, L"Hello, World", L"Hello", MB_OK);
-			return 0;
-		}
-	case WM_KEYDOWN:
-		{
-			if (wParam == VK_ESCAPE)
-				DestroyWindow(hWnd);
-			return 0;
-		}
-
-	case WM_SIZE:
-		{
-			int const mClientWidth = LOWORD(lParam);
-			int const mClientHeight = HIWORD(lParam);
-			ScreenResizeMessage message = { message.newWidth = mClientWidth, message.newHeight = mClientHeight };
-			Event<ScreenResizeMessage>::Raise(message);
-			return 0;
-		}
-	case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
+		std::shared_ptr<GameWindow> const pWindow = iteratorWindow->second;
+		pWindow->ProcessMessage(msg, wParam, lParam);
 	}
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -53,8 +25,8 @@ int Win32::Run(UserApp* pApp, HINSTANCE hInstance, int nCmdShow)
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstance;
-	wc.hIcon = LoadIcon(0, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(0, IDC_ARROW);
+	wc.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = L"BasicWndClass";
@@ -65,7 +37,6 @@ int Win32::Run(UserApp* pApp, HINSTANCE hInstance, int nCmdShow)
 		MessageBox(nullptr, L"RegisterClass FAILED", nullptr, 0);
 		return false;
 	}
-
 
 	m_hwnd = CreateWindow(
 		L"BasicWndClass", // Registered WNDCLASS instance to use.
@@ -86,16 +57,18 @@ int Win32::Run(UserApp* pApp, HINSTANCE hInstance, int nCmdShow)
 		return false;
 	}
 
+	windowsMap[m_hwnd] = std::make_shared<GameWindow>(m_hwnd, pApp->GetAppWidth(), pApp->GetAppHeight());
+
 	pApp->Init();
 
 	ShowWindow(m_hwnd, SW_SHOW);
 	UpdateWindow(m_hwnd);
 
-	MSG msg = { nullptr };
+	MSG msg = { m_hwnd };
 
 	while (msg.message != WM_QUIT)
 	{
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+		if (PeekMessage(&msg, m_hwnd, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
@@ -103,6 +76,7 @@ int Win32::Run(UserApp* pApp, HINSTANCE hInstance, int nCmdShow)
 		else // this part is the main game loop
 		{
 			CalculateFrameStats(pApp);
+			// pApp->GameLoop(); ???
 		}
 	}
 	return static_cast<int>(msg.wParam);

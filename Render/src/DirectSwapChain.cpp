@@ -17,6 +17,8 @@ void DirectSwapChain::CreateSwapChain()
 {
     // Describe and create the swap chain.
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+
+
     swapChainDesc.BufferCount = SwapChainBufferCount;
     swapChainDesc.Width = m_width;
     swapChainDesc.Height = m_height;
@@ -36,7 +38,7 @@ void DirectSwapChain::CreateSwapChain()
     ));
 
     ThrowIfFailed(swapChain.As(&m_swapChain));
-    m_currentFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
+    //m_currentFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
 }
 
 void DirectSwapChain::SetResolution(ScreenResizeMessage msg)

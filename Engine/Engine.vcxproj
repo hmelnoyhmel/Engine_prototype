@@ -156,11 +156,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\UserApp.cpp" />
     <ClCompile Include="src\Win32.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameWindow.h" />
     <ClInclude Include="src\UserApp.h" />
     <ClInclude Include="src\Win32.h" />
   </ItemGroup>

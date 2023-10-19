@@ -9,7 +9,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR pCmdLine, int nShowCmd)
 {
 	UserApp appSample(800, 600, L"Simple Window, nothing else");
-
 	try
 	{
 		Win32::Run(&appSample, hInstance, nShowCmd);
