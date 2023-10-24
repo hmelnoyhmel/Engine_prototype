@@ -2,15 +2,7 @@
 #include "DirectHelper.h"
 #include "DirectCommandQueue.h"
 #include "DirectSwapChain.h"
-#include "Enums.h"
 
-DirectDevice::DirectDevice(HWND hwnd) :
-	h_mainWindowHandle {hwnd}
-{
-	CreateDevice();
-	GetCommandQueue(EQueueType::Graphics);
-	//p_swapchain = std::make_shared<DirectSwapChain>(*this);
-}
 
 void DirectDevice::CreateDevice()
 {

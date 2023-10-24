@@ -1,6 +1,6 @@
 #pragma once
+#include "Enums.h"
 #include <wrl.h>
-#include <windows.ui.core.h>
 #include <dxgi1_6.h>
 
 using Microsoft::WRL::ComPtr;
@@ -27,7 +27,6 @@ private:
 
 public:
 	DirectSwapChain(DirectDevice& device);
-
 
 	void CreateSwapChain();
 	void SetResolution(ScreenResizeMessage msg);

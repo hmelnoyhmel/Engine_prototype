@@ -1,28 +1,29 @@
 #pragma once
-#include <string>
-#include <memory>
+#include "DirectDevice.h"
+#include <Windows.h>
 
-class Win32;
-struct ScreenResizeMessage;
+class GameWindow;
+class WindowsSystem;
 class DirectDevice;
 
 class UserApp
 {
-public:
-
-	UserApp(unsigned int width, unsigned int height, std::wstring windowName);
-
-	void Init();
-
-	inline unsigned int GetAppWidth() const { return m_appWidth; }
-	inline unsigned int GetAppHeight() const { return m_appHeight; }
-	inline std::wstring GetAppWindowName() const { return m_windowName; }
-	void SetResolution(ScreenResizeMessage msg);
-
+	friend WindowsSystem;
 private:
-	unsigned int m_appWidth;
-	unsigned int m_appHeight;
-	std::wstring m_windowName;
+	HINSTANCE m_hAppInstance;
+	DirectDevice* m_device; // temp
 
-	std::shared_ptr<DirectDevice> pm_device;
+	std::unordered_map<HWND, std::shared_ptr<GameWindow>> windowsMap;
+	void WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+public:
+	UserApp(HINSTANCE hInstance);
+	UserApp() = default;
+	virtual void Init();
+	virtual void Tick();
+
+	inline HINSTANCE GetInstance() const { return m_hAppInstance; }
+
+	template <typename T, typename ... Args>
+	std::shared_ptr<T> AddWindow(Args&& ... args);
 };

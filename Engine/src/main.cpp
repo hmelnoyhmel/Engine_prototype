@@ -2,16 +2,16 @@
 #include <iostream>
 #include <stdexcept>
 #include "UserApp.h"
-#include "Win32.h"
+#include "WindowsSystem.h"
 
 int WINAPI
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR pCmdLine, int nShowCmd)
 {
-	UserApp appSample(800, 600, L"Simple Window, nothing else");
+	UserApp appSample(hInstance);
 	try
 	{
-		Win32::Run(&appSample, hInstance, nShowCmd);
+		WindowsSystem::Run(appSample);
 	}
 	catch (const std::exception& e)
 	{

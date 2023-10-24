@@ -2,7 +2,6 @@
 #include "DirectDevice.h"
 #include "DirectCommandQueue.h"
 #include "DirectHelper.h"
-#include "Enums.h"
 #include "Event.h"
 
 DirectSwapChain::DirectSwapChain(DirectDevice& device) :
@@ -10,7 +9,6 @@ DirectSwapChain::DirectSwapChain(DirectDevice& device) :
 {
     auto callback = [this](ScreenResizeMessage msg) { this->SetResolution(msg); };
     Event<ScreenResizeMessage>::Subscribe(callback);
-    CreateSwapChain();
 }
 
 void DirectSwapChain::CreateSwapChain()
@@ -27,7 +25,9 @@ void DirectSwapChain::CreateSwapChain()
     swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     swapChainDesc.SampleDesc.Count = 1;
 
+
     ComPtr<IDXGISwapChain1> swapChain;
+    /*
     ThrowIfFailed(r_device.GetNativeFactory()->CreateSwapChainForHwnd(
         r_device.GetCommandQueue(EQueueType::Graphics).GetNativeQueue().Get(),        // Swap chain needs the queue so that it can force a flush on it.
         r_device.GetMainWindowHandle(),
@@ -39,6 +39,7 @@ void DirectSwapChain::CreateSwapChain()
 
     ThrowIfFailed(swapChain.As(&m_swapChain));
     //m_currentFrameIndex = m_swapChain->GetCurrentBackBufferIndex();
+    */
 }
 
 void DirectSwapChain::SetResolution(ScreenResizeMessage msg)
