@@ -43,6 +43,11 @@ void DirectDevice::CreateDevice()
     LogAdapters();
 #endif
 
+	ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+		IID_PPV_ARGS(&m_fence)));
+
+	m_fenceEvent = CreateEvent(nullptr, false, false, nullptr);
+
 }
 
 void DirectDevice::LogAdapters()

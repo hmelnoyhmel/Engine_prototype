@@ -11,23 +11,19 @@ struct ScreenResizeMessage;
 class DirectSwapChain
 {
 private:
-	// Native
+
 	ComPtr<IDXGISwapChain3> m_swapChain;
-	static constexpr unsigned int SwapChainBufferCount = 2;
+	static constexpr unsigned int SwapChainBufferCount = 3;
+	DirectDevice& r_device;
+	HWND m_hwnd;
 	unsigned int m_width;
 	unsigned int m_height;
 
-	unsigned int m_currentFrameIndex;
-
-
-	// Custom
-	DirectDevice& r_device;
-
-
-
 public:
-	DirectSwapChain(DirectDevice& device);
+	DirectSwapChain(DirectDevice& device, HWND hwnd, unsigned int width, unsigned int height);
+	void Resize(unsigned int width, unsigned int height);
+	void Present();
 
-	void CreateSwapChain();
-	void SetResolution(ScreenResizeMessage msg);
+	inline unsigned int GetWidth() const { return m_width; }
+	inline unsigned int GetHeight() const { return m_height; }
 };

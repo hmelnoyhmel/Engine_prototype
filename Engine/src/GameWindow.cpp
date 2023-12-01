@@ -1,8 +1,10 @@
 #include "GameWindow.h"
+
+#include "DirectSwapChain.h"
 #include "Event.h"
 
-GameWindow::GameWindow(HINSTANCE hInstance, unsigned int width, unsigned int height) :
-	m_windowWidth{ width }, m_windowHeight{ height }
+GameWindow::GameWindow(HINSTANCE hInstance, DirectDevice& device, unsigned int width, unsigned int height) :
+	m_device{ device }
 {
 	m_hwnd = CreateWindow(
 		L"BasicWndClass", // Registered WNDCLASS instance to use.
@@ -10,16 +12,19 @@ GameWindow::GameWindow(HINSTANCE hInstance, unsigned int width, unsigned int hei
 		WS_OVERLAPPEDWINDOW, // style flags
 		CW_USEDEFAULT, // x-coordinate
 		CW_USEDEFAULT, // y-coordinate
-		m_windowWidth, // width
-		m_windowHeight, // height
+		width, // width
+		height, // height
 		nullptr, // parent window
 		nullptr, // menu handle
 		hInstance, // app instance
 		nullptr); // extra creation parameters
 
 	SetWindowName(L"TestWindow");
+	CreateWindowSwapChain(m_device, width, height);
 	ShowWindow(m_hwnd, SW_SHOW);
 	UpdateWindow(m_hwnd);
+
+
 }
 
 LRESULT GameWindow::ProcessMessage(unsigned int msg, WPARAM wParam, LPARAM lParam)
@@ -45,20 +50,16 @@ LRESULT GameWindow::ProcessMessage(unsigned int msg, WPARAM wParam, LPARAM lPara
 	}
 	case WM_SIZE:
 	{
-		int const mClientWidth = LOWORD(lParam);
-		int const mClientHeight = HIWORD(lParam);
-		ScreenResizeMessage message = { message.newWidth = mClientWidth, message.newHeight = mClientHeight };
-		Event<ScreenResizeMessage>::Raise(message);
-		std::wstring const text =
-			L"    width: " + std::to_wstring(m_windowWidth) +
-			L"    height: " + std::to_wstring(m_windowHeight);
+		m_windowSwapChain->Resize(LOWORD(lParam), HIWORD(lParam));
+		std::wstring const text = m_windowName +
+			L"    width: " + std::to_wstring(GetWidth()) +
+			L"    height: " + std::to_wstring(GetHeight());
 		SetWindowText(m_hwnd, text.c_str());
+		//m_windowSwapChain->Resize(LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	}
-
-	case WM_DESTROY:
+	default:
 	{
-		PostQuitMessage(0);
 		return 0;
 	}
 	}
@@ -67,4 +68,32 @@ LRESULT GameWindow::ProcessMessage(unsigned int msg, WPARAM wParam, LPARAM lPara
 void GameWindow::SetWindowName(std::wstring windowName) const
 {
 	SetWindowText(m_hwnd, windowName.c_str());
+}
+
+
+void GameWindow::CreateWindowSwapChain(DirectDevice& device, int width, int height)
+{
+	m_windowSwapChain = std::make_shared<DirectSwapChain>(device, m_hwnd, width, height);
+}
+
+unsigned int GameWindow::GetWidth() const
+{
+	return m_windowSwapChain->GetWidth();
+}
+
+unsigned int GameWindow::GetHeight() const
+{
+	return m_windowSwapChain->GetHeight();
+}
+
+void GameWindow::Render()
+{
+	// Get cube
+	// Draw cube
+	// Call Present()
+	// Update Fence
+
+	// Causes memory leak
+	m_windowSwapChain->Present();
+
 }

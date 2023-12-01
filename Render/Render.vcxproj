@@ -148,12 +148,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DirectCommandList.h" />
     <ClInclude Include="src\DirectCommandQueue.h" />
     <ClInclude Include="src\DirectDevice.h" />
     <ClInclude Include="src\DirectSwapChain.h" />
     <ClInclude Include="src\Enums.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DirectCommandList.cpp" />
     <ClCompile Include="src\DirectCommandQueue.cpp" />
     <ClCompile Include="src\DirectDevice.cpp" />
     <ClCompile Include="src\DirectSwapChain.cpp" />

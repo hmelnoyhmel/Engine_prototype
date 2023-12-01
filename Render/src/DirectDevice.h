@@ -28,6 +28,9 @@ private:
 	ComPtr<IDXGIFactory7> m_factory;
 	ComPtr<ID3D12Device9> m_device;
 
+	ComPtr<ID3D12Fence> m_fence;
+	UINT64 m_fenceValue = 0;
+	HANDLE m_fenceEvent = nullptr;
 
 	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 
@@ -41,8 +44,14 @@ private:
 public:
 	DirectDevice() = default;
 	void CreateDevice();
+
 	inline ComPtr<IDXGIFactory7> GetNativeFactory() const { return m_factory; }
 	inline ComPtr<ID3D12Device9> GetNativeDevice() const { return m_device; }
+
+	inline ComPtr<ID3D12Fence> GetNativeFence() const { return m_fence; }
+	inline UINT64 GetFenceValue() const { return m_fenceValue; }
+	inline HANDLE GetFenceEvent() const { return m_fenceEvent; }
+	inline void AdvanceFence() { ++m_fenceValue; }
 
 	DirectCommandQueue& GetCommandQueue(EQueueType type);
 };
