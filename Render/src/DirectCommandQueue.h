@@ -1,28 +1,34 @@
 #pragma once
+#include "DirectCommandList.h"
 #include <wrl.h>
 #include <d3d12.h>
-#include <dxgi1_6.h>
-#include <memory>
 #include <queue>
-#include <vector>
-
-#include "DirectCommandList.h"
 
 using Microsoft::WRL::ComPtr;
 
 class DirectDevice;
-//class DirectCommandList;
+class DirectCommandList;
 enum class EQueueType;
 
 class DirectCommandQueue
 {
-private:
-	// Native
-	ComPtr<ID3D12CommandQueue> m_queue;
-	ComPtr<ID3D12CommandAllocator> m_allocator;
+	friend class DirectDevice;
 
-	// Custom
-	DirectDevice& r_device;
+public:
+	DirectCommandQueue(DirectDevice& device, EQueueType type);
+
+	void ExecuteCommandList(DirectCommandList& list);
+
+	void FlushCmdQueue() const;
+
+	inline ComPtr<ID3D12CommandQueue> GetNativeQueue() const { return nativeQueue; }
+	inline EQueueType GetQueueType() const { return type; }
+
+private:
+	ComPtr<ID3D12CommandQueue> nativeQueue;
+	EQueueType type;
+
+	DirectDevice& device;
 
 	std::queue<DirectCommandList> freeQueue;
 
@@ -32,14 +38,5 @@ private:
 	void CreateComputeQueue();
 	void CreateComputeAllocator();
 
-public:
-	DirectCommandQueue(DirectDevice& device, EQueueType type);
-
 	DirectCommandList GetCommandList();
-	void ExecuteCommandList(DirectCommandList& list);
-
-	void FlushCmdQueue();
-
-	inline ComPtr<ID3D12CommandQueue> GetNativeQueue() const { return m_queue; }
-	inline ComPtr<ID3D12CommandAllocator> GetNativeAllocator() const { return m_allocator; }
 };

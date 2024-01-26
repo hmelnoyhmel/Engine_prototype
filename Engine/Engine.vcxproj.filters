@@ -33,7 +33,7 @@
     <ClCompile Include="src\UserApp.cpp">
       <Filter>Source Files\UserCreatedFiles</Filter>
     </ClCompile>
-    <ClCompile Include="src\WindowsSystem.cpp">
+    <ClCompile Include="src\WindowHub.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GameWindow.cpp">
@@ -44,7 +44,7 @@
     <ClInclude Include="src\UserApp.h">
       <Filter>Header Files\UserCreatedFiles</Filter>
     </ClInclude>
-    <ClInclude Include="src\WindowsSystem.h">
+    <ClInclude Include="src\WindowHub.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GameWindow.h">

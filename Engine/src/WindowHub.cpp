@@ -1,22 +1,21 @@
-#include "WindowsSystem.h"
+#include "WindowHub.h"
 #include "UserApp.h"
 
-static UserApp* instance;
+static UserApp* appGlobalInstance;
 
-LRESULT CALLBACK WindowsSystem::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WindowHub::HubWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	instance->WndProc(hWnd, msg, wParam, lParam);
+	appGlobalInstance->AppWndProc(hWnd, msg, wParam, lParam);
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-int WindowsSystem::Run(UserApp& app)
+int WindowHub::Run(UserApp& app)
 {
-	instance = &app;
-
+	appGlobalInstance = &app;
 
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
+	wc.lpfnWndProc = HubWndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = app.GetInstance();
@@ -38,6 +37,8 @@ int WindowsSystem::Run(UserApp& app)
 	MSG msg = { };
 
 	bool run = true;
+	long int frameCounter = 0;
+	int x = 0;
 	while (run)
 	{
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -49,7 +50,14 @@ int WindowsSystem::Run(UserApp& app)
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		app.Tick();
+
+		if (frameCounter%200 == 0)
+		{
+			x++;
+		}
+
+		app.Tick(x);
+		frameCounter++;
 	}
 
 	return static_cast<int>(msg.wParam);

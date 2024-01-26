@@ -1,17 +1,16 @@
 #include <Windows.h>
 #include <iostream>
-#include <stdexcept>
 #include "UserApp.h"
-#include "WindowsSystem.h"
+#include "WindowHub.h"
 
 int WINAPI
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR pCmdLine, int nShowCmd)
 {
-	UserApp appSample(hInstance);
+	UserApp app(hInstance);
 	try
 	{
-		WindowsSystem::Run(appSample);
+		WindowHub::Run(app);
 	}
 	catch (const std::exception& e)
 	{

@@ -92,7 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\src\;$(SolutionDir)Render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -109,7 +109,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\src\;$(SolutionDir)Render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -126,7 +126,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\src\;$(SolutionDir)Render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -143,7 +143,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(SolutionDir)Utils\src\;$(SolutionDir)Render\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -159,12 +159,12 @@
     <ClCompile Include="src\GameWindow.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\UserApp.cpp" />
-    <ClCompile Include="src\WindowsSystem.cpp" />
+    <ClCompile Include="src\WindowHub.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameWindow.h" />
     <ClInclude Include="src\UserApp.h" />
-    <ClInclude Include="src\WindowsSystem.h" />
+    <ClInclude Include="src\WindowHub.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Render\Render.vcxproj">

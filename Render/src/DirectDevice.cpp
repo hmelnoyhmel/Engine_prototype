@@ -1,8 +1,7 @@
 #include "DirectDevice.h"
 #include "DirectHelper.h"
 #include "DirectCommandQueue.h"
-#include "DirectSwapChain.h"
-
+#include "DirectRenderTargetManager.h"
 
 void DirectDevice::CreateDevice()
 {
@@ -19,34 +18,34 @@ void DirectDevice::CreateDevice()
     }
 #endif
 
-    ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&m_factory)));
+    ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&nativeFactory)));
 
     // Try to create hardware device.
     HRESULT const hardwareResult = D3D12CreateDevice(
         nullptr,             // default adapter
         D3D_FEATURE_LEVEL_11_0,
-        IID_PPV_ARGS(&m_device));
+        IID_PPV_ARGS(&nativeDevice));
 
     // Fallback to WARP device.
     if (FAILED(hardwareResult))
     {
         ComPtr<IDXGIAdapter> warpAdapter;
-        ThrowIfFailed(m_factory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
+        ThrowIfFailed(nativeFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 
         ThrowIfFailed(D3D12CreateDevice(
             warpAdapter.Get(),
             D3D_FEATURE_LEVEL_11_0,
-            IID_PPV_ARGS(&m_device)));
+            IID_PPV_ARGS(&nativeDevice)));
     }
 
 #ifdef _DEBUG
     LogAdapters();
 #endif
 
-	ThrowIfFailed(m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE,
-		IID_PPV_ARGS(&m_fence)));
+	ThrowIfFailed(nativeDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
+		IID_PPV_ARGS(&nativeFence)));
 
-	m_fenceEvent = CreateEvent(nullptr, false, false, nullptr);
+	nativeFenceEvent = CreateEvent(nullptr, false, false, nullptr);
 
 }
 
@@ -55,7 +54,7 @@ void DirectDevice::LogAdapters()
 	UINT i = 0;
 	IDXGIAdapter* adapter = nullptr;
 	std::vector<IDXGIAdapter*> adapterList;
-	while (m_factory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
+	while (nativeFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)
 	{
 		DXGI_ADAPTER_DESC desc;
 		adapter->GetDesc(&desc);
@@ -122,7 +121,7 @@ void DirectDevice::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format
 			L"Refresh = " + std::to_wstring(n) + L"/" + std::to_wstring(d) +
 			L"\n";
 
-		::OutputDebugString(text.c_str());
+		OutputDebugString(text.c_str());
 	}
 }
 
@@ -135,4 +134,18 @@ DirectCommandQueue& DirectDevice::GetCommandQueue(EQueueType type)
 
 	queues[type] = std::make_shared<DirectCommandQueue>(*this, type);
 	return *queues[type];
+}
+
+DirectCommandList DirectDevice::GetCommandList(EQueueType type)
+{
+	return GetCommandQueue(type).GetCommandList();
+}
+
+DirectRenderTargetManager DirectDevice::GetRenderTargetManager()
+{
+	if (renderTargetManager != nullptr)
+		return *renderTargetManager;
+
+	renderTargetManager = std::make_shared<DirectRenderTargetManager>(*this);
+	return *renderTargetManager;
 }

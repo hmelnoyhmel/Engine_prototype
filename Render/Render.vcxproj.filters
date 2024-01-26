@@ -30,6 +30,12 @@
     <ClInclude Include="src\DirectCommandList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\DirectDescriptorAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DirectRenderTargetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DirectCommandQueue.cpp">
@@ -42,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DirectCommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectDescriptorAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DirectRenderTargetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
