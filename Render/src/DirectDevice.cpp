@@ -1,7 +1,6 @@
 #include "DirectDevice.h"
 #include "DirectHelper.h"
 #include "DirectCommandQueue.h"
-#include "DirectRenderTargetManager.h"
 
 void DirectDevice::CreateDevice()
 {
@@ -139,13 +138,4 @@ DirectCommandQueue& DirectDevice::GetCommandQueue(EQueueType type)
 DirectCommandList DirectDevice::GetCommandList(EQueueType type)
 {
 	return GetCommandQueue(type).GetCommandList();
-}
-
-DirectRenderTargetManager DirectDevice::GetRenderTargetManager()
-{
-	if (renderTargetManager != nullptr)
-		return *renderTargetManager;
-
-	renderTargetManager = std::make_shared<DirectRenderTargetManager>(*this);
-	return *renderTargetManager;
 }

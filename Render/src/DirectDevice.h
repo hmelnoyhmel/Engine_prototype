@@ -16,7 +16,6 @@ using Microsoft::WRL::ComPtr;
 class DirectCommandList;
 class DirectCommandQueue;
 class DirectSwapChain;
-class DirectRenderTargetManager;
 
 class DirectDevice
 {
@@ -34,7 +33,6 @@ public:
 
 	DirectCommandQueue& GetCommandQueue(EQueueType type);
 	DirectCommandList GetCommandList(EQueueType type);
-	DirectRenderTargetManager GetRenderTargetManager();
 
 
 private:
@@ -45,8 +43,6 @@ private:
 	ComPtr<ID3D12Fence> nativeFence;
 	UINT64 nativeFenceValue = 0;
 	HANDLE nativeFenceEvent = nullptr;
-
-	std::shared_ptr<DirectRenderTargetManager> renderTargetManager = nullptr;
 
 	DXGI_FORMAT m_BackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 

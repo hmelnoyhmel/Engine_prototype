@@ -20,7 +20,7 @@ public:
 	std::shared_ptr<T> AddWindow(Args&& ... args);
 
 	virtual void Init();
-	virtual void Tick(int x);
+	virtual void Tick();
 
 	inline HINSTANCE GetInstance() const { return appInstance; }
 

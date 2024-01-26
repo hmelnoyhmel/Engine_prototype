@@ -6,6 +6,8 @@
 
 #include <DirectXColors.h>
 
+static DirectRenderTargetManager RenderHelper;
+
 DirectCommandList::DirectCommandList(DirectDevice& device, DirectCommandQueue& queue) :
 	device { device }, queue { queue }
 {
@@ -42,6 +44,28 @@ DirectCommandList::DirectCommandList(DirectDevice& device, DirectCommandQueue& q
 	std::wstring text = L"Command list was created successfully.\n";
 	OutputDebugString(text.c_str());
 
+	RenderHelper.Initialize(device.GetNativeDevice());
+}
+
+void DirectCommandList::SetRenderTargets(const std::vector<ComPtr<ID3D12Resource2>>& rtvResources,
+	const D3D12_RENDER_TARGET_VIEW_DESC* pRTVDescs, ComPtr<ID3D12Resource2> dsvResource,
+	const D3D12_DEPTH_STENCIL_VIEW_DESC* pDSVDesc)
+{
+	RenderHelper.OMSetRenderTargets(nativeList, rtvResources.size(), rtvResources.data(), pRTVDescs, dsvResource, pDSVDesc);
+}
+
+void DirectCommandList::ClearRenderTarget(const ComPtr<ID3D12Resource2>& rtvResource,
+	const D3D12_RENDER_TARGET_VIEW_DESC* pRTVDesc, const FLOAT ColorRGBA[4], const UINT NumRects,
+	const D3D12_RECT* pRects) const
+{
+	RenderHelper.ClearRenderTargetView(nativeList, rtvResource, pRTVDesc, ColorRGBA, NumRects, pRects);
+}
+
+void DirectCommandList::ClearDepthStencil(const ComPtr<ID3D12Resource2>& dsvResource,
+                                          const D3D12_DEPTH_STENCIL_VIEW_DESC* pDSVDesc, const D3D12_CLEAR_FLAGS ClearFlags, const FLOAT Depth, const UINT8 Stencil,
+                                          const UINT NumRects, const D3D12_RECT* pRects) const
+{
+	RenderHelper.ClearDepthStencilView(nativeList,dsvResource, pDSVDesc, ClearFlags, Depth, Stencil, NumRects, pRects);
 }
 
 void DirectCommandList::FlushCmdList() const
@@ -50,36 +74,22 @@ void DirectCommandList::FlushCmdList() const
 	ThrowIfFailed(nativeList.Get()->Reset(nativeAllocator.Get(), nullptr));
 
 	// Debug
-	std::wstring text = L"List Flushed.\n";
+	const std::wstring text = L"List Flushed.\n";
 	OutputDebugString(text.c_str());
 }
 
-void DirectCommandList::Test(ComPtr<IDXGISwapChain3> sc, DirectRenderTargetManager& rtManager, int num)
+void DirectCommandList::Test(ComPtr<ID3D12Resource2>& backbuffer, const FLOAT ColorRGBA[4])
 {
-	//rtManager.InitRenderTarget();
-
-	sc->GetBuffer(sc->GetCurrentBackBufferIndex(), IID_PPV_ARGS(&backbuffer));
-
-	std::array<ComPtr<ID3D12Resource2>, 1> rtvs;
-	rtvs[0] = backbuffer;
-
-	rtManager.OMSetRenderTargets(*this, rtvs.size(), rtvs.data(), nullptr, nullptr, nullptr);
-
 	nativeList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backbuffer.Get(),
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	switch (num%3) {
-	case 0:
-		rtManager.ClearRenderTargetView(*this, backbuffer, nullptr, DirectX::Colors::Blue, 0, nullptr);
-		break;
-	case 1:
-		rtManager.ClearRenderTargetView(*this, backbuffer, nullptr, DirectX::Colors::Green, 0, nullptr);
-		break;
-	case 2:
-		rtManager.ClearRenderTargetView(*this, backbuffer, nullptr, DirectX::Colors::DarkViolet, 0, nullptr);
-		break;
-	}
+	ClearRenderTarget(backbuffer.Get(), nullptr, ColorRGBA, 0, nullptr);
 
 	nativeList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backbuffer.Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+}
+
+void DirectCommandList::Close() const
+{
+	nativeList->Close();
 }

@@ -2,6 +2,12 @@
 
 #include "DirectSwapChain.h"
 #include "Event.h"
+#include <DirectDevice.h>
+#include <DirectXColors.h>
+
+#include "DirectCommandList.h"
+#include "DirectCommandQueue.h"
+#include <SimpleMath.h>
 
 GameWindow::GameWindow(HINSTANCE hInstance, DirectDevice& device, unsigned int width, unsigned int height) :
 	device{ device }
@@ -94,12 +100,42 @@ float GameWindow::GetAspectRatio() const
 
 void GameWindow::Render()
 {
+	auto& q = device.GetCommandQueue(EQueueType::Graphics);
+	auto list = device.GetCommandList(EQueueType::Graphics);
+
 	// Get cube
 	// Draw cube
 	// Call Present()
 	// Update Fence
 
 	// Causes memory leak
-	swapChain->Present();
 
+	const auto sc = swapChain->GetNativeSwapChain();
+
+	ComPtr<ID3D12Resource2> backbuffer;
+	sc->GetBuffer(sc->GetCurrentBackBufferIndex(), IID_PPV_ARGS(&backbuffer));
+
+	static ULONGLONG count = 0;
+
+	DirectX::SimpleMath::Color color = DirectX::Colors::DarkRed;
+	if(count > 100)
+	{
+		color = DirectX::Colors::DarkGreen;
+		if(count > 200)
+		{
+			color = DirectX::Colors::DarkBlue;
+			if(count > 300)
+			{
+				count = 0;
+			}
+		}
+	}
+	count++;
+
+	list.Test(backbuffer, color);
+
+	list.Close();
+	q.ExecuteCommandList(list);
+
+	swapChain->Present();
 }

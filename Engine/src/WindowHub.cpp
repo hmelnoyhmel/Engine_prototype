@@ -37,8 +37,6 @@ int WindowHub::Run(UserApp& app)
 	MSG msg = { };
 
 	bool run = true;
-	long int frameCounter = 0;
-	int x = 0;
 	while (run)
 	{
 		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -51,13 +49,7 @@ int WindowHub::Run(UserApp& app)
 			DispatchMessage(&msg);
 		}
 
-		if (frameCounter%200 == 0)
-		{
-			x++;
-		}
-
-		app.Tick(x);
-		frameCounter++;
+		app.Tick();
 	}
 
 	return static_cast<int>(msg.wParam);
