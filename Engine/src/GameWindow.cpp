@@ -1,13 +1,21 @@
 #include "GameWindow.h"
+#include "GameWindow.h"
 
 #include "DirectSwapChain.h"
-#include "Event.h"
 #include <DirectDevice.h>
 #include <DirectXColors.h>
 
 #include "DirectCommandList.h"
 #include "DirectCommandQueue.h"
 #include <SimpleMath.h>
+
+#include "DirectResource.h"
+
+#include "DirectMesh.h"
+
+#include "DirectConstantBuffer.h"
+
+using namespace DirectX::SimpleMath;
 
 GameWindow::GameWindow(HINSTANCE hInstance, DirectDevice& device, unsigned int width, unsigned int height) :
 	device{ device }
@@ -30,6 +38,23 @@ GameWindow::GameWindow(HINSTANCE hInstance, DirectDevice& device, unsigned int w
 	ShowWindow(nativeHwnd, SW_SHOW);
 	UpdateWindow(nativeHwnd);
 
+	mScreenViewport.TopLeftX = 0;
+	mScreenViewport.TopLeftY = 0;
+	mScreenViewport.Width = static_cast<float>(width);
+	mScreenViewport.Height = static_cast<float>(height);
+	mScreenViewport.MinDepth = 0.0f;
+	mScreenViewport.MaxDepth = 1.0f;
+
+	mScissorRect = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
+
+	auto& q = device.GetCommandQueue(EQueueType::Graphics);
+	auto list = device.GetCommandList(EQueueType::Graphics);
+
+	mesh = std::make_shared<DirectMesh>(device, list);
+
+	list.Close();
+	q.ExecuteCommandList(list);
+
 
 }
 
@@ -45,7 +70,7 @@ LRESULT GameWindow::ProcessMessage(unsigned int msg, WPARAM wParam, LPARAM lPara
 	}
 	case WM_LBUTTONDOWN:
 	{
-		MessageBox(nullptr, L"Hello, World", L"Hello", MB_OK);
+		//MessageBox(nullptr, L"Hello, World", L"Hello", MB_OK);
 		return 0;
 	}
 	case WM_KEYDOWN:
@@ -103,39 +128,37 @@ void GameWindow::Render()
 	auto& q = device.GetCommandQueue(EQueueType::Graphics);
 	auto list = device.GetCommandList(EQueueType::Graphics);
 
-	// Get cube
-	// Draw cube
-	// Call Present()
-	// Update Fence
-
-	// Causes memory leak
+	mesh->Update(list);
 
 	const auto sc = swapChain->GetNativeSwapChain();
 
 	ComPtr<ID3D12Resource2> backbuffer;
 	sc->GetBuffer(sc->GetCurrentBackBufferIndex(), IID_PPV_ARGS(&backbuffer));
+	DirectX::SimpleMath::Color color = DirectX::Colors::LightBlue;
 
-	static ULONGLONG count = 0;
 
-	DirectX::SimpleMath::Color color = DirectX::Colors::DarkRed;
-	if(count > 100)
-	{
-		color = DirectX::Colors::DarkGreen;
-		if(count > 200)
-		{
-			color = DirectX::Colors::DarkBlue;
-			if(count > 300)
-			{
-				count = 0;
-			}
-		}
-	}
-	count++;
 
-	list.Test(backbuffer, color);
+	list.SetScissorRects(mScissorRect);
+	list.SetVieports(mScreenViewport);
+
+	list.ClearRenderTarget(backbuffer, nullptr, color, 0, nullptr);
+	
+	auto rs = device.GetOrCreateRootSignature();
+	list.SetRootSignature(*rs);
+
+	std::vector<ComPtr<ID3D12Resource2>> res;
+	res.push_back(backbuffer);
+
+	list.SetRenderTargets(res);
+	mesh->Draw(list);
+
+	list.SetPresentState(backbuffer);
 
 	list.Close();
 	q.ExecuteCommandList(list);
 
 	swapChain->Present();
+
+	//DirectResource* myBuffer = nullptr;
+
 }

@@ -1,6 +1,8 @@
 #include "DirectDevice.h"
 #include "DirectHelper.h"
 #include "DirectCommandQueue.h"
+#include "DirectResource.h"
+#include "DirectRootSignature.h"
 
 void DirectDevice::CreateDevice()
 {
@@ -127,9 +129,9 @@ void DirectDevice::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format
 
 DirectCommandQueue& DirectDevice::GetCommandQueue(EQueueType type)
 {
-	auto const queue = queues.find(type);
-	if (queue != queues.end())
-		return *queue->second;
+	auto const currentQueue = queues.find(type);
+	if (currentQueue != queues.end())
+		return *currentQueue->second;
 
 	queues[type] = std::make_shared<DirectCommandQueue>(*this, type);
 	return *queues[type];
@@ -139,3 +141,37 @@ DirectCommandList DirectDevice::GetCommandList(EQueueType type)
 {
 	return GetCommandQueue(type).GetCommandList();
 }
+
+
+
+bool DirectDevice::TryGetResource(_In_ EResourceType type, _In_ std::string name, _Out_ DirectResource*& outResource)
+{
+	auto const currentResource = resources.find(name);
+	if (currentResource != resources.end())
+	{
+		outResource = &currentResource->second;
+		return true;
+	}
+
+	return false;
+}
+
+
+std::shared_ptr<DirectRootSignature> DirectDevice::GetOrCreateRootSignature()
+{
+	if (rootSignature == nullptr)
+		rootSignature = std::make_shared<DirectRootSignature>(*this);
+	return rootSignature;
+}
+
+
+
+/*
+	else
+	{
+		auto resource = DirectResource{ type };
+		resources[name] = resource;
+		outResource = &resource;
+		return true;
+	}
+*/

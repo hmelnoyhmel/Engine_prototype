@@ -9,3 +9,8 @@ enum class EListType
 {
 	Graphics, Compute
 };
+
+enum class EResourceType
+{
+	Buffer, Texture
+};

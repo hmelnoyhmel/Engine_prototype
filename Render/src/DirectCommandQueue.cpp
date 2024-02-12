@@ -39,9 +39,9 @@ DirectCommandList DirectCommandQueue::GetCommandList()
 {
 	if (!freeQueue.empty())
 	{
-		auto list = freeQueue.front();
+		auto currentList = freeQueue.front();
 		freeQueue.pop();
-		return std::move(list);
+		return std::move(currentList);
 	}
 
 	return std::move(DirectCommandList{ device, *this });

@@ -139,10 +139,15 @@
     <ClInclude Include="src\d3dx12.h" />
     <ClInclude Include="src\DirectHelper.h" />
     <ClInclude Include="src\Event.h" />
+    <ClInclude Include="src\SimpleMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DirectHelper.cpp" />
     <ClCompile Include="src\Event.cpp" />
+    <ClCompile Include="src\SimpleMath.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\SimpleMath.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

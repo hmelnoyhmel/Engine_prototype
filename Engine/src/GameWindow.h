@@ -3,8 +3,15 @@
 #include <Windows.h>
 #include <string>
 
+#include "DirectConstantBuffer.h"
+#include "MathHelper.h"
+#include "SimpleMath.h"
+
+class DirectMesh;
 class DirectDevice;
 class DirectSwapChain;
+
+using namespace DirectX::SimpleMath;
 
 class GameWindow
 {
@@ -28,6 +35,32 @@ private:
 	DirectDevice& device;
 
 	std::shared_ptr<DirectSwapChain> swapChain;
+	std::shared_ptr<DirectMesh> mesh;
 	void CreateWindowSwapChain(DirectDevice& device, int width, int height);
 
+
+	D3D12_VIEWPORT mScreenViewport;
+	D3D12_RECT mScissorRect;
+
+	/*
+	std::shared_ptr<DirectConstantBuffer> cameraCB;
+	std::shared_ptr<DirectConstantBuffer> objectCB;
+
+
+
+	struct alignas(sizeof(Vector4)) CameraData
+	{
+		Matrix Position;
+		Matrix Rotation;
+		Matrix View;
+		Matrix Projection;
+	};
+
+	struct alignas(sizeof(Vector4)) ObjectData
+	{
+		Matrix Position;
+		Matrix Rotation;
+		Matrix Scale;
+	};
+	*/
 };

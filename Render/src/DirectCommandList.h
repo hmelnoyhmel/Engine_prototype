@@ -8,11 +8,15 @@
 #include <vector>
 
 #include "DirectSwapChain.h"
+#include "DirectMesh.h"
+#include "IRenderPipelineAttacher.h"
 
+class DirectRootSignature;
 using Microsoft::WRL::ComPtr;
 
 class DirectDevice;
 class DirectCommandQueue;
+class DirectResource;
 class DirectSwapChain;
 
 class DirectCommandList
@@ -46,10 +50,20 @@ public:
 	void FlushCmdList() const;
 
 	void Test(ComPtr<ID3D12Resource2>& backbuffer, const FLOAT ColorRGBA[]);
+	void SetPresentState(ComPtr<ID3D12Resource2>& backbuffer);
+	void SetVieports(const D3D12_VIEWPORT& screenViewport);
+	void SetScissorRects(const D3D12_RECT& scissorRect);
+
 	void Close() const;
+
+	void SetRootSignature(DirectRootSignature& rootSignature);
+	//void SetResourceBarrier();
 
 private:
 	friend DirectCommandQueue;
+	friend IRenderPipelineAttacher;
+	friend DirectMesh;
+
 	inline ComPtr<ID3D12GraphicsCommandList6> GetNativeList() const { return nativeList; }
 	inline ComPtr<ID3D12CommandAllocator> GetNativeAllocator() const { return nativeAllocator; }
 
@@ -59,7 +73,4 @@ private:
 	DirectDevice& device;
 	DirectCommandQueue& queue;
 
-
-	//ComPtr<ID3D12DescriptorHeap> rtvHeap;
-	//UINT rtvDescriptorSize = 0;
 };

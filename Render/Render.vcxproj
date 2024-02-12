@@ -153,21 +153,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\DirectBuffer.h" />
     <ClInclude Include="src\DirectCommandList.h" />
     <ClInclude Include="src\DirectCommandQueue.h" />
+    <ClInclude Include="src\DirectConstantBuffer.h" />
     <ClInclude Include="src\DirectDescriptorAllocator.h" />
     <ClInclude Include="src\DirectDevice.h" />
+    <ClInclude Include="src\DirectGameObject.h" />
+    <ClInclude Include="src\DirectIndexBuffer.h" />
+    <ClInclude Include="src\DirectMesh.h" />
+    <ClInclude Include="src\DirectPSO.h" />
     <ClInclude Include="src\DirectRenderTargetManager.h" />
+    <ClInclude Include="src\DirectResource.h" />
+    <ClInclude Include="src\DirectRootSignature.h" />
     <ClInclude Include="src\DirectSwapChain.h" />
+    <ClInclude Include="src\DirectTexture.h" />
+    <ClInclude Include="src\DirectVertexBuffer.h" />
     <ClInclude Include="src\Enums.h" />
+    <ClInclude Include="src\IRenderPipelineAttacher.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DirectBuffer.cpp" />
     <ClCompile Include="src\DirectCommandList.cpp" />
     <ClCompile Include="src\DirectCommandQueue.cpp" />
+    <ClCompile Include="src\DirectConstantBuffer.cpp" />
     <ClCompile Include="src\DirectDescriptorAllocator.cpp" />
     <ClCompile Include="src\DirectDevice.cpp" />
+    <ClCompile Include="src\DirectGameObject.cpp" />
+    <ClCompile Include="src\DirectIndexBuffer.cpp" />
+    <ClCompile Include="src\DirectMesh.cpp" />
+    <ClCompile Include="src\DirectPSO.cpp" />
     <ClCompile Include="src\DirectRenderTargetManager.cpp" />
+    <ClCompile Include="src\DirectResource.cpp" />
+    <ClCompile Include="src\DirectRootSignature.cpp" />
     <ClCompile Include="src\DirectSwapChain.cpp" />
+    <ClCompile Include="src\DirectTexture.cpp" />
+    <ClCompile Include="src\DirectVertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Utils\Utils.vcxproj">

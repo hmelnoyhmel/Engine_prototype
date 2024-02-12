@@ -5,17 +5,21 @@
 #include <dxgi1_6.h>
 #include <unordered_map>
 #include <memory>
+#include <string>
 
 // Linking D3D12 libs
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+
 using Microsoft::WRL::ComPtr;
 
 class DirectCommandList;
 class DirectCommandQueue;
 class DirectSwapChain;
+class DirectResource;
+class DirectRootSignature;
 
 class DirectDevice
 {
@@ -34,6 +38,9 @@ public:
 	DirectCommandQueue& GetCommandQueue(EQueueType type);
 	DirectCommandList GetCommandList(EQueueType type);
 
+	bool TryGetResource(_In_ EResourceType type, _In_ std::string name, _Out_ DirectResource*& output);
+
+	std::shared_ptr<DirectRootSignature> GetOrCreateRootSignature();
 
 private:
 
@@ -48,6 +55,13 @@ private:
 
 	// Custom
 	std::unordered_map<EQueueType, std::shared_ptr<DirectCommandQueue>> queues;
+
+	// CreateResource() method
+	// inside will call cmdList and execute it immediately
+	// resource creation itself is made in cmdList
+	std::unordered_map<std::string, DirectResource&> resources;
+
+	std::shared_ptr<DirectRootSignature> rootSignature;
 
 	void LogAdapters();
 	void LogAdapterOutputs(IDXGIAdapter* adapter);
