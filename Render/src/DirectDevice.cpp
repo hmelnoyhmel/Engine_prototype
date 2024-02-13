@@ -4,43 +4,44 @@
 #include "DirectResource.h"
 #include "DirectRootSignature.h"
 
-void DirectDevice::CreateDevice()
+
+DirectDevice::DirectDevice()
 {
-    unsigned int dxgiFactoryFlags = 0;
+	unsigned int dxgiFactoryFlags = 0;
 #if defined(_DEBUG) || defined (DEBUG)
-    // Enable the debug layer (requires the Graphics Tools "optional feature").
-    // NOTE: Enabling the debug layer after device creation will invalidate the active device.
-    {
-        ComPtr<ID3D12Debug> debugController;
-        ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
-        debugController->EnableDebugLayer();
-        // Enable additional debug layers.
-        dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-    }
+	// Enable the debug layer (requires the Graphics Tools "optional feature").
+	// NOTE: Enabling the debug layer after device creation will invalidate the active device.
+	{
+		ComPtr<ID3D12Debug> debugController;
+		ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+		debugController->EnableDebugLayer();
+		// Enable additional debug layers.
+		dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+	}
 #endif
 
-    ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&nativeFactory)));
+	ThrowIfFailed(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&nativeFactory)));
 
-    // Try to create hardware device.
-    HRESULT const hardwareResult = D3D12CreateDevice(
-        nullptr,             // default adapter
-        D3D_FEATURE_LEVEL_11_0,
-        IID_PPV_ARGS(&nativeDevice));
+	// Try to create hardware device.
+	HRESULT const hardwareResult = D3D12CreateDevice(
+		nullptr,             // default adapter
+		D3D_FEATURE_LEVEL_11_0,
+		IID_PPV_ARGS(&nativeDevice));
 
-    // Fallback to WARP device.
-    if (FAILED(hardwareResult))
-    {
-        ComPtr<IDXGIAdapter> warpAdapter;
-        ThrowIfFailed(nativeFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
+	// Fallback to WARP device.
+	if (FAILED(hardwareResult))
+	{
+		ComPtr<IDXGIAdapter> warpAdapter;
+		ThrowIfFailed(nativeFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter)));
 
-        ThrowIfFailed(D3D12CreateDevice(
-            warpAdapter.Get(),
-            D3D_FEATURE_LEVEL_11_0,
-            IID_PPV_ARGS(&nativeDevice)));
-    }
+		ThrowIfFailed(D3D12CreateDevice(
+			warpAdapter.Get(),
+			D3D_FEATURE_LEVEL_11_0,
+			IID_PPV_ARGS(&nativeDevice)));
+	}
 
 #ifdef _DEBUG
-    LogAdapters();
+	LogAdapters();
 #endif
 
 	ThrowIfFailed(nativeDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE,
@@ -142,8 +143,6 @@ DirectCommandList DirectDevice::GetCommandList(EQueueType type)
 	return GetCommandQueue(type).GetCommandList();
 }
 
-
-
 bool DirectDevice::TryGetResource(_In_ EResourceType type, _In_ std::string name, _Out_ DirectResource*& outResource)
 {
 	auto const currentResource = resources.find(name);
@@ -163,15 +162,3 @@ std::shared_ptr<DirectRootSignature> DirectDevice::GetOrCreateRootSignature()
 		rootSignature = std::make_shared<DirectRootSignature>(*this);
 	return rootSignature;
 }
-
-
-
-/*
-	else
-	{
-		auto resource = DirectResource{ type };
-		resources[name] = resource;
-		outResource = &resource;
-		return true;
-	}
-*/

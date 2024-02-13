@@ -1,6 +1,7 @@
 #pragma once
 #include <wrl.h>
 #include <dxgi1_6.h>
+#include <memory>
 
 using Microsoft::WRL::ComPtr;
 
@@ -10,7 +11,8 @@ struct ScreenResizeMessage;
 class DirectSwapChain
 {
 public:
-	DirectSwapChain(DirectDevice& device, HWND hwnd, const unsigned int width, const unsigned int height);
+	DirectSwapChain(std::shared_ptr<DirectDevice> device, HWND hwnd, const unsigned int width, const unsigned int height);
+
 	void Resize(const unsigned int newWidth, const unsigned int newHeight);
 	void Present() const;
 
@@ -18,12 +20,11 @@ public:
 	inline unsigned int GetHeight() const { return height; }
 	inline ComPtr<IDXGISwapChain3> GetNativeSwapChain() const { return nativeSwapChain; }
 
-
 private:
 
 	ComPtr<IDXGISwapChain3> nativeSwapChain;
 	static constexpr unsigned int swapChainBufferCount = 3;
-	DirectDevice& device;
+	std::shared_ptr<DirectDevice> device;
 	HWND hwnd;
 	unsigned int width;
 	unsigned int height;

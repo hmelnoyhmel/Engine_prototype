@@ -26,18 +26,10 @@ public:
 
 private:
 	HINSTANCE appInstance;
-	DirectDevice* device;
+	std::shared_ptr<DirectDevice> device;
 
 	std::unordered_map<HWND, std::shared_ptr<GameWindow>> windows;
 
 	void AppWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-
-	// 
-	struct Vertex
-	{
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT4 color;
-	};
 
 };

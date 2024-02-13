@@ -6,8 +6,7 @@
 UserApp::UserApp(HINSTANCE hInstance) :
 	appInstance{hInstance}
 {
-	device = new DirectDevice();
-	device->CreateDevice();
+	device = std::make_shared<DirectDevice>();
 }
 
 template <typename T, typename... Args>
@@ -41,17 +40,12 @@ void UserApp::AppWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void UserApp::Init()
 {
-	AddWindow<GameWindow>(*device, 800, 600);
-	// AddWindow<GameWindow>(*device, 1200, 600);
+	AddWindow<GameWindow>(device, 800, 600);
+	AddWindow<GameWindow>(device, 1200, 600);
 
 	for (auto& pair : windows)
 	{
-		Vertex triangleVertices[] =
-		{
-			{{0.0f, 0.25f * pair.second->GetAspectRatio(), 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-			{{0.25f, -0.25f * pair.second->GetAspectRatio(), 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-			{{-0.25f, -0.25f * pair.second->GetAspectRatio(), 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}}
-		};
+		
 	}
 }
 

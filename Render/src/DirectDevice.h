@@ -24,8 +24,9 @@ class DirectRootSignature;
 class DirectDevice
 {
 public:
-	DirectDevice() = default;
-	void CreateDevice();
+	DirectDevice();
+	//DirectDevice() = default;
+	//void CreateDevice();
 
 	inline ComPtr<IDXGIFactory7> GetNativeFactory() const { return nativeFactory; }
 	inline ComPtr<ID3D12Device9> GetNativeDevice() const { return nativeDevice; }

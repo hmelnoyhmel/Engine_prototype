@@ -8,9 +8,9 @@
 #include <vector>
 
 #include "DirectSwapChain.h"
-#include "DirectMesh.h"
 #include "IRenderPipelineAttacher.h"
 
+class DirectMesh;
 class DirectRootSignature;
 using Microsoft::WRL::ComPtr;
 

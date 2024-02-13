@@ -161,7 +161,6 @@
     <ClInclude Include="src\DirectDevice.h" />
     <ClInclude Include="src\DirectGameObject.h" />
     <ClInclude Include="src\DirectIndexBuffer.h" />
-    <ClInclude Include="src\DirectMesh.h" />
     <ClInclude Include="src\DirectPSO.h" />
     <ClInclude Include="src\DirectRenderTargetManager.h" />
     <ClInclude Include="src\DirectResource.h" />
@@ -181,7 +180,6 @@
     <ClCompile Include="src\DirectDevice.cpp" />
     <ClCompile Include="src\DirectGameObject.cpp" />
     <ClCompile Include="src\DirectIndexBuffer.cpp" />
-    <ClCompile Include="src\DirectMesh.cpp" />
     <ClCompile Include="src\DirectPSO.cpp" />
     <ClCompile Include="src\DirectRenderTargetManager.cpp" />
     <ClCompile Include="src\DirectResource.cpp" />

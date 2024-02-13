@@ -39,7 +39,7 @@
     <ClCompile Include="src\GameWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\MathHelper.cpp">
+    <ClCompile Include="src\DirectMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClInclude Include="src\GameWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\MathHelper.h">
+    <ClInclude Include="src\DirectMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

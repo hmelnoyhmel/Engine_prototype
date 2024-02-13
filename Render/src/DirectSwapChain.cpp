@@ -6,7 +6,7 @@
 
 #include "DirectXColors.h"
 
-DirectSwapChain::DirectSwapChain(DirectDevice& device, HWND hwnd, const unsigned int width, const unsigned int height) :
+DirectSwapChain::DirectSwapChain(std::shared_ptr<DirectDevice> device, HWND hwnd, const unsigned int width, const unsigned int height) :
 	device{ device }, hwnd{ hwnd }, width{ width }, height{ height }
 {
 
@@ -29,8 +29,8 @@ DirectSwapChain::DirectSwapChain(DirectDevice& device, HWND hwnd, const unsigned
         swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
         ComPtr<IDXGISwapChain1> swapChain;
-        ThrowIfFailed(device.GetNativeFactory()->CreateSwapChainForHwnd(
-            device.GetCommandQueue(EQueueType::Graphics).GetNativeQueue().Get(), // Swap chain needs the queue so that it can force a flush on it.
+        ThrowIfFailed(device->GetNativeFactory()->CreateSwapChainForHwnd(
+            device->GetCommandQueue(EQueueType::Graphics).GetNativeQueue().Get(), // Swap chain needs the queue so that it can force a flush on it.
             hwnd,
             &swapChainDesc,
             nullptr,
@@ -54,7 +54,7 @@ void DirectSwapChain::Resize(const unsigned int newWidth, const unsigned int new
     height = newHeight;
 
     // Flush the queue before resizing.
-    device.GetCommandQueue(EQueueType::Graphics).FlushCmdQueue();
+    device->GetCommandQueue(EQueueType::Graphics).FlushCmdQueue();
 
     // Resize the swap chain.
     ThrowIfFailed(nativeSwapChain->ResizeBuffers(
