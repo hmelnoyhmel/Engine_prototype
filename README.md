@@ -1,3 +1,3 @@
-Engine_Name
+DirectX 12 rendering engine
 
-Engine_Desc"#Engine_prototype" 
+Small DX12 rendering engine prototype, created in educational purposes  
